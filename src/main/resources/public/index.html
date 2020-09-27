@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-table/dist/bootstrap-table.css">
+    <link rel="stylesheet" href="bootstrap-submenu/dist/css/bootstrap-submenu.css">
+    <link rel="stylesheet" href="fontawesome-free-5.7.2/css/all.css">
+    <link rel="stylesheet" href="common/css/custome.css">
+
+    <script src="jquery-3.3.1/jquery-3.3.1.js" ></script>
+    <script src="bootstrap-4.3.1-dist/js/bootstrap.bundle.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table.js" ></script>
+    <script src="bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="bootstrap-table/dist/extensions/i18n-enhance/bootstrap-table-i18n-enhance.min.js"></script>
+    <script src="tableexport.jquery.plugin/tableExport.js"></script>
+    <script src="bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script src="bootstrap-submenu/dist/js/bootstrap-submenu.js" ></script>
+    <script src="jquery.nicescroll-3.7.6/jquery.nicescroll.js" ></script>
+
+</head>
+<body>
+<div class="modal" id="env-add" role="dialog" aria-labelledby="createEnv" >
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">创建集群</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <form id='env_form' class="form-horizontal ">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label" for="code">环境编码:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-code"></span></div>
+                                <input id="code" name="code" class="form-control" placeholder="AE0001" type="text" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="name">项目名称:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-mountain"></span></div>
+                                <input id="name" name="name" class="form-control" placeholder="项目名称" type="text" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="company">公司名称:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-hotel"></span></div>
+                                <input id="company" name="company" class="form-control" placeholder="北京东方国信科技有限公司" type="text" value=""/>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="address">项目地址:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-ad"></span></div>
+                                <input id="address" name="address" class="form-control" placeholder="北京" type="text" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="maintainer">项目负责人:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-user"></span></div>
+                                <input id="maintainer" name="maintainer" class="form-control" placeholder="张三" type="text" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="version">版本号:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-code-branch"></span></div>
+                                <input id="version" name="version" class="form-control" type="text" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="phone">联系方式:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-phone"></span></div>
+                                <input id="phone" name="phone" class="form-control" placeholder="13071212533" type="text" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <label class="control-label" for="password">访问密码:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text fa fa-lock"></span></div>
+                                <input id="password" name="password" class="form-control" type="password" placeholder="集群访问密码，需要记录下来，非常重要" value=""/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="control-label" for="license">LICENSE:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-address-book"></span></div>
+                            <textarea id="license" name="license" class="form-control" ></textarea>
+                        </div>
+                    </div>
+
+                    <input id="hash" name="hash" class="form-control" type="hidden" value=""/>
+                    <input id="createDate" name="createDate" class="form-control" type="hidden" value=""/>
+                    <input id="updateDate" name="updateDate" class="form-control" type="hidden" value=""/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save_env">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="env-delete" role="dialog" aria-labelledby="envDelete" >
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-body" >
+                <form id="delete_form" class="form-horizontal ">
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text fa fa-lock"></span></div>
+                        <input id='delete_password'  name="password" class="form-control" placeholder="访问密码"  type="password" value=""/>
+                        <input id="delete_code" name="code" class="form-control" type="hidden" value=""/>
+                        <button type="button" class="btn btn-danger" id="delete_env" onclick="_table.deleteEnv()">删除</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideModel('env-delete')">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="image-modal" role="dialog" aria-labelledby="envEntry" >
+    <div class="modal-dialog modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">镜像列表</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form id="image_form" class="form-horizontal "></form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="env-entry" role="dialog" aria-labelledby="envEntry" >
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="entry_form" class="form-horizontal ">
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text fa fa-lock"></span></div>
+                        <input id="entry_password" name="password" class="form-control" placeholder="访问密码" type="password" value=""/>
+                        <input id="entry_code" name="code" class="form-control" type="hidden" value=""/>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="entry_env" onclick="_table.entryEnv()">进入</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideModel('env-entry')">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar show-top sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="index.html">集群管理</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+        <form id="template-form" class="top-tool">
+            <a class="btn btn-primary" href="javascript:void(0);"  data-toggle="modal" data-target="#env-add"  id="add_btn" title="创建集群"><i  class="fa fa-plus"></i> 创建集群</a>
+            <a class="btn btn-primary" href="faqs.html?FAQ.md"  target="_blank" id="cmd_btn" title="维护手册"><i  class="fa fa-question"></i> 维护手册</a>
+        </form>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div id="toolbar"></div>
+    <table id="env_table"
+           data-toolbar="#toolbar"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-fullscreen="true"
+           data-show-columns="false"
+           data-locale="zh-CN"
+           data-show-pagination-switch="true"
+           data-pagination="true"
+           data-page-list="[10, 25, 50, 100, ALL]"
+           data-show-footer="true">
+    </table>
+</div>
+</body>
+<script src="common/js/utils.js"></script>
+<script src="common/js/env.js"></script>
+<script type="text/javascript">
+    $(function(){
+        basePath="";
+        _table = new Env();
+    });
+</script>
+</html>

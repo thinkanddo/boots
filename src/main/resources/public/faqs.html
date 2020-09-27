@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>常见问题</title>
+    <link rel="stylesheet" href="ztree_toc-0.3.0/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+
+
+    <script src="jquery-3.3.1/jquery-3.3.1.js" ></script>
+    <script src="ztree_toc-0.3.0/js/jquery.ztree.core-3.5.js" ></script>
+    <script src="ztree_toc-0.3.0/dist/ztree_toc.js" ></script>
+    <script src="bootstrap-4.3.1-dist/js/bootstrap.bundle.js" ></script>
+    <script src="marked-0.7.0/marked.min.js"></script>
+    <style>
+        pre {
+            margin-left: 32px;
+            background-color: #eee;
+            padding: 10px;
+        }
+        .md_render {
+            box-shadow:0 0 2px 1px rgba(21, 25, 37, 0.67)
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="col-md-8 ztree" id="tree" ></div>
+    <div class="md_render col-md-8 offset-sm-2 "></div>
+</div>
+<script>
+    $(document).ready(function(){
+        $.get("v1/env/faqs/"+window.location.href.split("?")[1], function(result){
+            $('.md_render').html(marked(result));
+            $('#tree').ztree_toc({
+                // is_auto_number: true,
+                documment_selector: '.md_render',
+                highlight_on_scroll: false,
+                is_highlight_selected_line: false,
+                _header_nodes: [{ id:1, pId:0, name:"维护手册",open:false,url: "faqs.html?FAQ.md",target:'_self'}],
+                ztreeSetting:{
+                    view: {
+                        dblClickExpand: false,
+                        showLine: false,
+                        showIcon: true,
+                        selectedMulti: false
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true,
+                            idKey : "id",
+                            pIdKey: "pId",
+                            // rootPId: "0"
+                        }
+                    },
+                    callback:{
+                        beforeClick: function () {
+                        },
+                        onRightClick:function () {
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-table/dist/bootstrap-table.css">
+    <link rel="stylesheet" href="bootstrap-submenu/dist/css/bootstrap-submenu.css">
+    <link rel="stylesheet" href="bootstrap-select-1.13.11/css/bootstrap-select.css">
+    <link rel="stylesheet" href="fontawesome-free-5.7.2/css/all.css">
+    <link rel="stylesheet" href="common/css/custome.css">
+
+    <style>
+        .form-group{
+            margin: 0 10px;
+        }
+    </style>
+
+    <script src="jquery-3.3.1/jquery-3.3.1.js" ></script>
+    <script src="bootstrap-4.3.1-dist/js/bootstrap.bundle.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table.js" ></script>
+    <script src="bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="bootstrap-table/dist/extensions/i18n-enhance/bootstrap-table-i18n-enhance.min.js"></script>
+    <script src="tableexport.jquery.plugin/tableExport.js"></script>
+    <script src="bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script src="bootstrap-submenu/dist/js/bootstrap-submenu.js" ></script>
+    <script src="bootstrap-select-1.13.11/js/bootstrap-select.js"></script>
+    <script src="bootstrap-select-1.13.11/js/i18n/defaults-zh_CN.js"></script>
+    <script src="jquery.nicescroll-3.7.6/jquery.nicescroll.js" ></script>
+
+</head>
+<body>
+<div class="modal" id="k8s_info" role="dialog" aria-labelledby="资源信息" >
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="globalModalLabel">资源信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <form class="form-horizontal ">
+                    <textarea class="form-control" rows="20" id="k8s_info_content"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<nav class="navbar show-top sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="index.html">集群管理 <small id="env_code"></small></a>
+    <a class="navbar-brand text-secondary" href="javascript:void(0);" id="license"></a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div id="toolbar">
+        <div id="k8s_form" class="form-inline install-hide" role="form">
+            <div class="form-group">
+                <label for="k8s_group">分组:  </label>
+                <select id="k8s_group" data-name="DICT_K8S_GROUP" class="k8s-select" data-live-search="true"  title="分组"> </select>
+            </div>
+
+            <div class="form-group">
+                <label for="k8s_ns">租户:  </label>
+                <select id="k8s_ns" data-name="DICT_K8S_NS" class="k8s-select" data-live-search="true"  title="租户">
+                    <option selected>不选择</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="k8s_type">类型:  </label>
+                <select id="k8s_type" data-name="DICT_K8S_RESOURCE." data-target="k8s_group" class="k8s-select" data-live-search="true"  title="类型"></select>
+            </div>
+
+            <button type="button" id="search_btn" class="btn btn-primary">查询</button>
+        </div>
+    </div>
+    <table id="k8s_table"
+           data-toolbar="#toolbar"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-fullscreen="true"
+           data-show-export="true"
+           data-show-columns="true"
+           data-locale="zh-CN"
+           data-pagination="false"
+           data-show-footer="false">
+    </table>
+</div>
+</body>
+<script src="common/js/utils.js"></script>
+<script src="common/js/k8s.js"></script>
+</html>

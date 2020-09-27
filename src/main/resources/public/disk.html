@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-table/dist/bootstrap-table.css">
+    <link rel="stylesheet" href="bootstrap-submenu/dist/css/bootstrap-submenu.css">
+    <link rel="stylesheet" href="fontawesome-free-5.7.2/css/all.css">
+    <link rel="stylesheet" href="bootstrap-select-1.13.11/css/bootstrap-select.css">
+    <link rel="stylesheet" href="common/css/custome.css">
+
+    <style>
+        .form-group{
+            margin: 0 10px;
+        }
+    </style>
+
+    <script src="jquery-3.3.1/jquery-3.3.1.js" ></script>
+    <script src="bootstrap-4.3.1-dist/js/bootstrap.bundle.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table.js" ></script>
+    <script src="bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="bootstrap-table/dist/extensions/i18n-enhance/bootstrap-table-i18n-enhance.min.js"></script>
+    <script src="tableexport.jquery.plugin/tableExport.js"></script>
+    <script src="bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script src="bootstrap-submenu/dist/js/bootstrap-submenu.js" ></script>
+    <script src="bootstrap-select-1.13.11/js/bootstrap-select.js"></script>
+    <script src="bootstrap-select-1.13.11/js/i18n/defaults-zh_CN.js"></script>
+
+</head>
+<body>
+<div class="modal" id="disk-add" role="dialog" aria-labelledby="分配存储" >
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">分配 <small id="role_name"></small> 存储</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <form id='disk_form' class="form-horizontal ">
+                    <div class="form-group " >
+                        <label class="control-label" for="name">选择名称:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-flag"></span></div>
+                            <select id="name" class="form-control"   title="使用名称"> </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group " >
+                        <label class="control-label" for="devName">选择设备:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-hdd"></span></div>
+                            <select id="devName" class="form-control"   title="选择设备"> </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group " >
+                        <label class="control-label" for="devSize">分配大小:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-equals"></span></div>
+                            <input id="devSize" name="devSize" class="form-control" type="text" value=""/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="save_disk">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<nav class="navbar show-top sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="index.html">集群管理 <small id="env_code"></small></a>
+    <a class="navbar-brand text-secondary" href="javascript:void(0);" id="license"></a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div id="toolbar">
+        <div id="dev_form" class="form-inline" role="form">
+            <div class="form-group">
+                <label for="ip">IP:  </label>
+                <select id="ip"  data-live-search="true"  title="IP"> </select>
+            </div>
+            <div class="form-group">
+                <label for="roleCode">角色:  </label>
+                <select id="roleCode" title="角色"> </select>
+            </div>
+            <button type="button" id="add_btn" class="btn  btn-primary" data-id="null" data-toggle="modal" data-target="#disk-add" >新增</button>
+        </div>
+    </div>
+    <table id="disk_table"
+           data-toggle="table"
+           data-toolbar="#toolbar"
+           data-buttons-align="left"
+           data-toolbar-align="right"
+           data-search="false"
+           data-unique-id="id"
+           data-show-refresh="true"
+           data-show-fullscreen="true"
+           data-show-export="true"
+           data-show-columns="true"
+           data-locale="zh-CN"
+           data-sort-order="desc"
+           data-sort-name="createDate"
+           data-response-handler="responseHandler">
+        <thead>
+        <tr>
+            <th data-field="ip">IP</th>
+            <th data-field="devName">设备名称</th>
+            <th data-field="devParent" >设备源</th>
+            <th data-field="devSize" >设备大小</th>
+            <th data-field="devSizeUsed" >设备使用量</th>
+            <th data-field="enableSize" data-formatter="enableFormatter" >可用大小</th>
+            <th data-field="name" data-formatter="nameFormatter">名称</th>
+            <th data-field="partType" >设备类型</th>
+            <th data-field="createDate"  data-formatter="dateFormatter">执行时间</th>
+            <th data-field="updateDate" data-formatter="dateFormatter">结束时间</th>
+            <th data-field="statusDesc" data-sortable="true" >设备状态</th>
+            <th data-field="operate" data-formatter="detailFormatter" data-events="operateEvents">操作</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</body>
+<script src="common/js/utils.js"></script>
+<script type="text/javascript">
+    var $ip =$("#ip");
+    var $roleCode = $("#roleCode");
+    var $table = $("#disk_table");
+    var $devName = $("#devName");
+    var $devSize = $("#devSize");
+    var $name = $("#name");
+    var $roleName = $("#role_name");
+    var ipMap = {};
+    var storeCfg = {};
+    var devSize = {};
+    var devPart = {};
+
+    function deleteRow(e, value, row, index) {
+        $.ajax({
+            url: "v1/dev",
+            type: "delete",
+            data: {
+                id: row.id
+            },
+            success: function (res) {
+                if(res.code === 200 ){
+                    alert("删除成功！");
+                    loadTable();
+
+                    var dev_set = ipMap[row.ip].devs;
+                    for (var i in dev_set){
+                        if (dev_set[i].devName === row.devName){
+                            var dev_id  = dev_set[i].id;
+                            devSize[dev_id] = devSize[dev_id]+row.devSize;
+                            break;
+                        }
+                    }
+                }else{
+                    alert("删除失败！");
+                }
+            }
+        })
+    }
+
+    window.operateEvents={
+        'click .delete': deleteRow
+    };
+
+    function responseHandler(res) {
+        res.rows = res.data;
+        return res
+    }
+
+    function enableFormatter(value, rows, index, field) {
+        if (devSize[rows.id] !== undefined ){
+            return devSize[rows.id];
+        }
+    }
+
+    function nameFormatter(value, rows, index, field) {
+        if ( value===null || value ===undefined || value===""){
+            return "主设备";
+        }else{
+            return value;
+        }
+    }
+
+    function detailFormatter(value, rows, index, field) {
+        var opt = ['<a class="col-sm-offset-1"  href="javascript:void(0)" ><i title="修改设备" class="fa fa-edit" data-id="'+rows.id+'" data-name="'+rows.name+'" data-dev="'+rows.devParent+'" data-size="'+rows.devSize+'" data-toggle="modal" data-target="#disk-add"  ></i></a>'];
+        if (rows.status==='0'){
+            opt.push( '<a class="col-sm-offset-1 delete"  href="javascript:void(0)" ><i title="删除日志" class="fa fa-trash"></i></a> ');
+        }
+        return opt.join(' ');
+    }
+
+    $("#delete_btn").on("click",function () {
+        $("#log_table").bootstrapTable("getSelections").forEach(function (row) {
+            deleteRow(null,null,row,null);
+        });
+    });
+
+    function loadHost() {
+        var ip = window.location.href.split("?")[1];
+
+        $.get("v1/host").then(function (res) {
+            if (res.code === 200){
+                res.data.forEach(function (row) {
+                    ipMap[row.id.ip] = row;
+                    $ip.append("<option value='"+row.id.ip+"' >"+row.id.ip+"</option>");
+
+                    row.devs.forEach(function (dev) {
+                        devSize[dev.id] = dev.enableSize-dev.unUsedSize;
+                        devPart[dev.id] = dev.partType;
+                    })
+                });
+
+                $ip.val(ip);
+
+                $ip.selectpicker();
+                $roleCode.selectpicker();
+                $devName.selectpicker();
+                $name.selectpicker();
+
+                loadRoleCode();
+            }
+        });
+    }
+
+    function loadRoleCode(){
+        var ip = $ip.val();
+
+        if (ip === undefined || ip ===''){
+            return
+        }
+
+        var roleMap = ipMap[ip].roles;
+
+        var roleId;
+        $roleCode.html("");
+        for (var roleCode in roleMap){
+            if (storeCfg[roleCode] !== undefined){
+                var row = roleMap[roleCode];
+                if (roleId===undefined || roleCode==="default"){
+                    roleId = row.id;
+                }
+                $roleCode.append("<option value='"+row.id+"' >"+row.roleCode+"</option>");
+            }
+        }
+
+        $roleCode.selectpicker("refresh");
+        $roleCode.val(roleId);
+        $roleCode.selectpicker("refresh");
+
+        loadTable();
+
+        loadDisk();
+    }
+
+    function loadDisk(id,role_name,name,dev,size){
+        $roleName.html(role_name);
+
+        var ip = $ip.val();
+        if (ip === undefined || ip ===''){
+            return
+        }
+        var devSet = ipMap[ip].devs;
+        $devName.html("");
+        devSet.forEach(function (row) {
+            if (row.status!=='1' ){
+                if (dev===undefined || dev===row.devName){
+                    dev = row.id;
+                }
+                $devName.append("<option value='"+row.id+"' >"+row.devName+"</option>");
+            }
+        });
+        $devName.selectpicker("refresh");
+        $devName.val(dev);
+        $devName.selectpicker("refresh");
+
+        $devName.data("id",id);
+
+        if (undefined!==role_name){
+            $name.html("");
+            storeCfg[role_name].forEach(function (row) {
+                if (name===undefined){
+                    name = row.name;
+                }
+                $name.append("<option value='"+row.name+"' >"+row.name+"</option>");
+            });
+
+            $name.selectpicker("refresh");
+            $name.val(name);
+            $name.selectpicker("refresh");
+        }
+
+        devSizeTip();
+
+        if (size !== undefined){
+            $devSize.val(size);
+        }else{
+            $devSize.val("");
+            size = 0;
+        }
+        $devName.data("size",size);
+
+        $devName.data("dev",dev);
+    }
+
+    function devSizeTip() {
+        var id = $devName.val();
+        $devSize.attr("placeholder","可用空间大小 "+devSize[id]+" GB").val("");
+        var size = $devSize.val();
+    }
+
+    function saveDisk() {
+        var dev = $devName.find("option:selected");
+        var role = $roleCode.find("option:selected");
+
+        var dev_id = dev.val();
+        var dev_name = dev.text();
+        var role_id = role.val();
+        var name = $name.val();
+        var id = $devName.data("id");
+        var size = $devName.data("size");
+        var old_dev_id = $devName.data("dev");
+
+        devSize[old_dev_id] = devSize[old_dev_id] + size;
+
+        var opt = {
+            id: id,
+            ip: $ip.val(),
+            hostRoleId: role_id,
+            devSize: $devSize.val(),
+            devName: dev_name,
+            devParent: dev_name,
+            name: name,
+            partType: devPart[dev_id]
+        };
+
+        if (devSize[dev_id]< opt.devSize){
+            alert("可使用空间不足！");
+            return;
+        }
+
+        $.post("v1/dev",opt,function (res) {
+            if (res.code === 200 ){
+                alert("保存成功！");
+                loadTable();
+                devSize[dev_id] = devSize[dev_id]-opt.devSize;
+            }else{
+                alert("保存失败！")
+            }
+        });
+    }
+
+    function loadTable(){
+        var opt = {
+            ip: $ip.val(),
+            roleId: $roleCode.val()
+        };
+        $table.bootstrapTable("refreshOptions",{url: "v1/dev?"+$.param(opt)})
+    }
+
+    function loadStoreType(){
+        $.get("v1/store",function (res) {
+            if (res.code === 200 ){
+                res.data.forEach(function (row) {
+                    if (storeCfg[row.roleCode] ===undefined){
+                        storeCfg[row.roleCode] = [row];
+                    }else{
+                        storeCfg[row.roleCode].push(row);
+                    }
+                    storeCfg.default = [];
+                });
+
+                loadHost();
+            }
+        });
+    }
+
+    $(function () {
+        loadStoreType();
+
+        $ip.on('change',loadRoleCode);
+
+        $roleCode.on("change",loadTable);
+
+        $("#disk-add").on('show.bs.modal', function (event) {
+            var role_name = $roleCode.find("option:selected").text();
+            if (role_name==="default"){
+                alert("default 角色不能分配设备");
+                return false;
+            }
+
+            var button = $(event.relatedTarget);
+            var name = button.data('name');
+            var dev = button.data('dev');
+            var size = button.data("size");
+            var id = button.data("id");
+
+            loadDisk(id,role_name,name,dev,size);
+        });
+
+        $("#save_disk").on("click",saveDisk);
+
+        $devName.on('change',devSizeTip);
+    })
+</script>
+</html>

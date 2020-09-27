@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-select-1.13.11/css/bootstrap-select.css">
+    <link rel="stylesheet" href="bootstrap-table/dist/bootstrap-table.css">
+    <link rel="stylesheet" href="bootstrap-submenu/dist/css/bootstrap-submenu.css">
+    <link rel="stylesheet" href="fontawesome-free-5.7.2/css/all.css">
+    <link rel="stylesheet" href="common/css/custome.css">
+
+    <script src="jquery-3.3.1/jquery-3.3.1.js" ></script>
+    <script src="bootstrap-4.3.1-dist/js/bootstrap.bundle.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table.js" ></script>
+    <script src="bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js" ></script>
+    <script src="bootstrap-table/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="bootstrap-table/dist/extensions/i18n-enhance/bootstrap-table-i18n-enhance.min.js"></script>
+    <script src="tableexport.jquery.plugin/tableExport.js"></script>
+    <script src="bootstrap-table/dist/extensions/export/bootstrap-table-export.js"></script>
+    <script src="bootstrap-submenu/dist/js/bootstrap-submenu.js" ></script>
+    <script src="bootstrap-select-1.13.11/js/bootstrap-select.js"></script>
+    <script src="bootstrap-select-1.13.11/js/i18n/defaults-zh_CN.js"></script>
+    <script src="jquery.nicescroll-3.7.6/jquery.nicescroll.js" ></script>
+
+</head>
+<body>
+<nav class="navbar show-top sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="index.html">集群管理 <small id="env_code"></small></a>
+    <a class="navbar-brand text-secondary" href="javascript:void(0);" id="license"></a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+    </div>
+</nav>
+<div class="modal" id="task-edit" role="dialog" aria-labelledby="修改任务" >
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改任务</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <form id='task_form' class="form-horizontal ">
+                    <input id="uuid" type="hidden"/>
+                    <div class="form-group " >
+                        <label class="control-label" for="curIndex">任务步骤:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-lock"></span></div>
+                            <select id="curIndex" class="form-control"   title="任务状态"> </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group " >
+                        <label class="control-label" for="status">任务状态:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text fa fa-cog"></span></div>
+                            <select id="status" class="form-control"   title="任务状态"> </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="save_task">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="cmd_info" role="dialog" aria-labelledby="执行命令" >
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document" data-show="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="globalModalLabel">执行命令</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+                <form id='cmd_form' class="form-horizontal "></form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div id="toolbar">
+        <div id="k8s_form" class="form-inline" role="form">
+            <button type="button" id="delete_btn" class="btn  btn-danger">刪除</button>
+        </div>
+    </div>
+    <table id="log_table"
+           data-toggle="table"
+           data-toolbar="#toolbar"
+           data-url="v1/exec/logs"
+           data-search="true"
+           data-unique-id="uuid"
+           data-show-refresh="true"
+           data-show-toggle="true"
+           data-show-fullscreen="true"
+           data-show-export="true"
+           data-show-columns="true"
+           data-locale="zh-CN"
+           data-show-pagination-switch="true"
+           data-pagination="true"
+           data-page-list="[10, 25, 50, 100, ALL]"
+           data-show-footer="true"
+           data-sort-order="desc"
+           data-sort-name="createDate"
+           data-response-handler="responseHandler">
+        <thead>
+        <tr>
+            <th data-field="isSelect" data-checkbox="true"  >选择</th>
+            <th data-field="uuid">任务ID</th>
+            <th data-field="playCode">任务编码</th>
+            <th data-field="playName" data-sortable="true" >任务名称</th>
+            <th data-field="curIndex" >执行序号</th>
+            <th data-field="curPlaybook" data-formatter="playbookFormatter">执行步骤</th>
+            <th data-field="times" data-sortable="true" >执行次数</th>
+            <th data-field="createDate" data-sortable="true" data-formatter="dateFormatter">创建时间</th>
+            <th data-field="beginDate" data-sortable="true" data-formatter="dateFormatter">执行时间</th>
+            <th data-field="endDate" data-sortable="true" data-formatter="dateFormatter">结束时间</th>
+            <th data-field="statusDesc" data-sortable="true" >任务状态</th>
+            <th data-field="operate" data-formatter="detailFormatter" data-events="operateEvents">任务详情</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</body>
+<script src="common/js/utils.js"></script>
+<script type="text/javascript">
+
+    function deleteRow(e, value, row, index) {
+        $.ajax({
+            url: "v1/exec/logs/"+row.uuid,
+            type: "delete",
+            success: function (res) {
+                if (index !== null){
+                    if(res.code === 200 ){
+                        alert("删除成功！")
+                    }else{
+                        alert("删除失败！");
+                    }
+                }
+
+                if (res.code === 200 ){
+                    $("#log_table").bootstrapTable('removeByUniqueId', row.uuid)
+                }
+            }
+        });
+    }
+
+    function saveRow(){
+        $.ajax({
+            url: "v1/exec/logs",
+            type: "post",
+            data: {
+                uuid: $uuid.val(),
+                status: $status.val(),
+                curIndex: $curIndex.val()
+            },
+            success: function (res) {
+                if (res.code === 200 ){
+                    alert("修改成功！");
+                    $("#log_table").bootstrapTable('updateByUniqueId', {id:res.data.uuid,row:res.data});
+                }else{
+                    alert("修改失败！");
+                }
+            }
+        });
+    }
+
+    window.operateEvents={
+        'click .delete': deleteRow
+    };
+
+    function responseHandler(res) {
+        res.rows = res.data;
+        return res
+    }
+    
+    function playbookFormatter(value, rows, index, field) {
+        var playCode = rows.playCode;
+
+        if (playTask[playCode] === undefined){
+            $.ajax({
+                type : "get",
+                url :   "v1/exec/playbooks?playCode="+playCode,
+                async: false,
+                success : function(res) {
+                    if (res.code ===200 ){
+                        var playbook = {};
+                        res.data.forEach(function (row) {
+                            playbook[row.index] = row;
+                        });
+                        playTask[playCode] = playbook;
+                    }
+                }
+            });
+        }
+
+        if (playTask[playCode][rows.curIndex]===undefined){
+            return "任务正在执行中！";
+        }else{
+            return playTask[playCode][rows.curIndex].playbookName;
+        }
+    }
+
+    function detailFormatter(value, rows, index, field) {
+        return ['<a class="col-sm-offset-1 cmd"  href="javascript:void(0)" ><i title="执行命令" class="fa fa-code" data-uuid="'+rows.uuid+'" data-toggle="modal" data-target="#cmd_info"  ></i></a>',
+            '<a class="col-sm-offset-1"  href="v1/exec/logs/'+rows.uuid+'" target="_blank"><i title="查询日志" class="fa fa-water"></i></a> ',
+            '<a class="col-sm-offset-1"  href="v1/exec/logs/'+rows.uuid+'" download ><i title="日志下载" class="fa fa-download"></i></a> ',
+            '<a class="col-sm-offset-1"  href="javascript:void(0)"   ><i title="修改任务" class="fa fa-edit" data-uuid="'+rows.uuid+'" data-toggle="modal" data-target="#task-edit"  ></i></a> ',
+            '<a class="col-sm-offset-1 delete"  href="javascript:void(0)" download ><i title="删除日志" class="fa fa-trash"></i></a> '
+        ].join(' ');
+    }
+
+    function loadPlaybook(playCode,index) {
+        $curIndex.html("");
+        for (var key in playTask[playCode]){
+            $curIndex.append("<option value='"+key+"'>"+playTask[playCode][key].playbookName+"</option>");
+        }
+        $curIndex.selectpicker("refresh");
+        $curIndex.val(index);
+        $curIndex.selectpicker("refresh");
+    }
+
+    var $logTable = $("#log_table");
+    var $status = $("#status");
+    var $uuid = $("#uuid");
+    var $curIndex = $("#curIndex");
+    var playTask = {};
+
+    $(function () {
+        $.get("v1/exec/task/status").then(function (res) {
+            if (res.code === 200){
+                for (var key in res.data){
+                    $status.append("<option value='"+key+"'>"+res.data[key]+"</option>");
+                }
+                $status.selectpicker();
+            }
+        });
+
+        $curIndex.selectpicker();
+
+        $("#cmd_info").on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var uuid = button.data('uuid');
+            var cmd_str = $("#log_table").bootstrapTable("getRowByUniqueId", uuid).cmd;
+            var cmd_arr = cmd_str.split('\n');
+            $.each(cmd_arr , function(index,value){
+                $("#cmd_form").append('                    <textarea class="form-control" rows="2" id="cmd_content" readonly>' + value + '</textarea><br/>');
+            });
+
+            // $("#cmd_content").val($("#log_table").bootstrapTable("getRowByUniqueId",uuid).cmd);
+        });
+
+        $("#task-edit").on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var uuid = button.data('uuid');
+            var row = $logTable.bootstrapTable("getRowByUniqueId",uuid);
+            var playCode = row.playCode;
+            var curIndex = row.curIndex;
+            loadPlaybook(playCode,curIndex);
+            $uuid.val(uuid);
+            $status.val(row.status).selectpicker("refresh");
+        });
+
+        $("#delete_btn").on("click",function () {
+            $("#log_table").bootstrapTable("getSelections").forEach(function (row) {
+                deleteRow(null,null,row,null);
+            });
+        });
+
+        $("#save_task").on("click",saveRow);
+    })
+
+</script>
+</html>

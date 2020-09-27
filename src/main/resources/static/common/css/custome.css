@@ -1,0 +1,99 @@
+/*微调checkbox展示样式*/
+.bs-checkbox label {margin: 2px 0 0 0;}
+
+/*展示form表单label样式*/
+.input-group-prepend span {padding: 10px 12px 6px;}
+
+/*调整角色选择表头宽度*/
+.table thead th .th-inner{ padding: 0.30rem !important; }
+
+/*调整pop弹出的提示消息的展示层级*/
+.popover{ z-index: 1000 !important;}
+
+button {outline: none;}
+
+.install-hide{
+    display: none !important;
+}
+
+/*去掉圆角效果*/
+* {
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
+/*增加图标动态闪烁效果*/
+/* 定义keyframe动画，命名为blink */
+/* 定义blink类*/
+.blink{
+    animation: blink 1s linear infinite;
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: blink 1s linear infinite;
+    -moz-animation: blink 1s linear infinite;
+    -o-animation: blink 1s linear infinite;
+}
+
+@keyframes blink{
+    0%{opacity: 1;}
+    100%{opacity: 0;}
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+    0% {opacity: 1; }
+    100% { opacity: 0;}
+}
+@-o-keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.box{
+    animation: changeshadow 1s  ease-in  infinite ;
+    /* 其它浏览器兼容性前缀 */
+    -webkit-animation: changeshadow 1s linear infinite;
+    -moz-animation: changeshadow 1s linear infinite;
+    -o-animation: changeshadow 1s linear infinite;
+}
+@keyframes changeshadow {
+    0%{ text-shadow: 0 0 4px}
+    50%{ text-shadow: 0 0 40px}
+    100%{ text-shadow: 0 0 4px}
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes changeshadow {
+    0%{ text-shadow: 0 0 4px}
+    50%{ text-shadow: 0 0 40px}
+    100%{ text-shadow: 0 0 4px}
+}
+@-moz-keyframes changeshadow {
+    0%{ text-shadow: 0 0 4px}
+    50%{ text-shadow: 0 0 40px}
+    100%{ text-shadow: 0 0 4px}
+}
+@-ms-keyframes changeshadow {
+    0%{ text-shadow: 0 0 4px}
+    50%{ text-shadow: 0 0 40px}
+    100%{ text-shadow: 0 0 4px}
+}
+@-o-keyframes changeshadow {
+    0%{ text-shadow: 0 0 4px}
+    50%{ text-shadow: 0 0 40px}
+    100%{ text-shadow: 0 0 4px}
+}
+
+.bootstrap-table .fixed-table-toolbar .columns .dropdown-menu{
+    max-height: 500px;
+}
+
+.bootstrap-select .btn{
+    border: 1px solid #ced4da;
+}
